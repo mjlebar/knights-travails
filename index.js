@@ -61,6 +61,34 @@ class Knight {
   } //there are eight possible moves a knight can make... however, before we can add them, we need to verify they don't take us off the board. That's what the if statements in here do
 }
 
-const knight = new Knight([3, 3]);
+// console.log(knight.possibleMoves());
 
-console.log(knight.possibleMoves());
+function knightMoves(start, end) {
+  let queue = [[start]]; //queue of spots to be called
+
+  while (queue.length > 0) {
+    const next = queue.shift();
+
+    let possiblePath = checkMoves(next);
+
+    if (possiblePath) return possiblePath;
+  } //runs the queue until we find the possible path... since there's always a possible path this should always complete. technically we could have put in something like while(true)
+
+  function checkMoves(pathSoFar) {
+    const last = pathSoFar[pathSoFar.length - 1];
+    if (last[0] === end[0] && last[1] === end[1]) {
+      return pathSoFar;
+    } else {
+      let knight = new Knight(last);
+      let moves = knight.possibleMoves();
+      for (let move of moves) {
+        queue.push(pathSoFar.concat([move]));
+      }
+      return 0;
+    }
+  } //defined in scope of function moves so it has access to queue variable... given a possible path, returns the path if it ends at the target square, otherwise adds possible moves from the last square in the path, adds all the resulting paths to the queue and returns 0
+} //Performs a BFS of possible moves until we find a path from the start to the end. Returns that path as an array
+
+console.log(knightMoves([0, 0], [3, 3]));
+console.log(knightMoves([3, 3], [0, 0]));
+console.log(knightMoves([3, 3], [4, 3]));
